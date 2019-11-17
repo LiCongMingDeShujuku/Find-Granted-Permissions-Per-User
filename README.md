@@ -29,8 +29,6 @@ If you are dropping an account with for example: drop login [int\myaccount], and
 
 To find SQL GRANTS which were explicitly given per account.
 
-
-
 ---
 ## Logic
 ```SQL
@@ -55,6 +53,21 @@ order by
 
 ```
 
+如果你想要将数据库所有者更改为某些内容（例如“sa”），则可以运行以下逻辑（logic）。
+
+If you want to change the database owner to something ( for example ‘sa’ ), you can run the following logic.
+
+```SQL
+use master;
+set nocount on
+declare @change_database_owner      varchar(max)
+set 	@change_database_owner      = ''
+select  @change_database_owner      = @change_database_owner + 
+'exec [' + name + ']..sp_changedbowner ''sa'';' + char(10)
+from    sys.databases where name not in ('tempdb') order by name asc
+exec    (@change_database_owner)
+
+```
 
 
 [![WorksEveryTime](https://forthebadge.com/images/badges/60-percent-of-the-time-works-every-time.svg)](https://shitday.de/)
